@@ -1,0 +1,61 @@
+# macOS 系统文件
+.DS_Store
+
+# IntelliJ IDEA 和其他 JetBrains IDEs
+.idea/
+*.iml
+out/
+
+# Maven 和 Gradle 构建文件
+target/
+build/
+
+# 日志文件
+*.log
+logs/
+
+# 临时文件和编译结果
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.7z
+
+# 操作系统和工具产生的临时文件
+*.swp
+*.swo
+*~
+Thumbs.db
+desktop.ini
+
+# Java 特定忽略文件
+.javadoc/
+.jax-ws/
+.jax-rs/
+
+# jlox 特定忽略规则
+jlox/.classpath
+jlox/.project
+jlox/.settings/
+jlox/bin/
+jlox/build/
+
+# 忽略 jlox 中的 IDE 配置文件
+jlox/.idea/
+jlox/*.iml
+
+# 忽略 jlox 中的日志和调试文件
+jlox/*.log
+
+# 忽略 jlox 中的临时文件
+jlox/temp/
+jlox/*~
+
+# 忽略 jlox 中的测试输出
+jlox/test-output/
+
+# 通用规则
+*.bak
+*.tmp
