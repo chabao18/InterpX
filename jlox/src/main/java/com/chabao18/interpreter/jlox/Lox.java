@@ -55,14 +55,14 @@ public class Lox {
         }
     }
 
-    static void error(int line, String format, Object... args) {
+    static void error(int row, int col, String format, Object... args) {
         String message = String.format(format, args);
-        report(line, "", message);
+        report(row, col, "", message);
     }
 
     // TODO 指出具体错误位置
-    private static void report(int line, String where, String message) {
-        System.err.println("[line " + line + "] Error" + where + ": " + message);
+    private static void report(int row, int col, String where, String message) {
+        System.err.printf("[%d:%d] Error %s: %s\n", row, col, where, message);
         hadError = true;
     }
 }

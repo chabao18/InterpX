@@ -14,29 +14,31 @@ class Scanner {
 
     private int start = 0;
     private int current = 0;
-    private int line = 1;
+    private int row = 1;
+    private int col = 1;
 
     private static final Map<String, TokenType> keywords;
 
     static {
         keywords = new HashMap<>();
-        keywords.put("and",    AND);
-        keywords.put("class",  CLASS);
-        keywords.put("else",   ELSE);
-        keywords.put("false",  FALSE);
-        keywords.put("for",    FOR);
-        keywords.put("fun",    FUN);
-        keywords.put("if",     IF);
-        keywords.put("nil",    NIL);
-        keywords.put("or",     OR);
-        keywords.put("print",  PRINT);
+        keywords.put("and", AND);
+        keywords.put("class", CLASS);
+        keywords.put("else", ELSE);
+        keywords.put("false", FALSE);
+        keywords.put("for", FOR);
+        keywords.put("fun", FUN);
+        keywords.put("if", IF);
+        keywords.put("nil", NIL);
+        keywords.put("or", OR);
+        keywords.put("print", PRINT);
         keywords.put("return", RETURN);
-        keywords.put("super",  SUPER);
-        keywords.put("this",   THIS);
-        keywords.put("true",   TRUE);
-        keywords.put("var",    VAR);
-        keywords.put("while",  WHILE);
+        keywords.put("super", SUPER);
+        keywords.put("this", THIS);
+        keywords.put("true", TRUE);
+        keywords.put("var", VAR);
+        keywords.put("while", WHILE);
     }
+
     Scanner(String source) {
         this.source = source;
     }
@@ -46,6 +48,7 @@ class Scanner {
     }
 
     private char advance() {
+        col++;
         return source.charAt(current++);
     }
 
@@ -55,7 +58,7 @@ class Scanner {
 
     private void addToken(TokenType type, Object literal) {
         String text = source.substring(start, current);
-        tokens.add(new Token(type, text, literal, line));
+        tokens.add(new Token(type, text, literal, row, col - text.length(), text.length()));
     }
 
     List<Token> scanTokens() {
@@ -65,7 +68,7 @@ class Scanner {
             scanToken();
         }
 
-        tokens.add(new Token(EOF, "", null, line));
+        tokens.add(new Token(EOF, "", null, row, col, 1));
         return tokens;
     }
 
@@ -119,6 +122,20 @@ class Scanner {
                     while (peek() != '\n' && !isAtEnd()) {
                         advance();
                     }
+                } else if (match('*')) {
+                    while (!(peek() == '*' && peekNext() == '/') && !isAtEnd()) {
+                        if (peek() == '\n') {
+                            row++;
+                            col = 1;
+                        }
+                        advance();
+                    }
+                    if (isAtEnd()) {
+                        Lox.error(row, col, "Unterminated comment.");
+                    } else {
+                        advance();
+                        advance();
+                    }
                 } else {
                     addToken(SLASH);
                 }
@@ -129,7 +146,8 @@ class Scanner {
             case '\t':
                 break;
             case '\n':
-                line++;
+                row++;
+                col = 1;
                 break;
 
             case '"':
@@ -142,7 +160,7 @@ class Scanner {
                 } else if (isAlpha(c)) {
                     identifier();
                 } else {
-                    Lox.error(line, "Unexpected character '%c'", c);
+                    Lox.error(row, col, "Unexpected character '%c'", c);
                 }
                 break;
         }
@@ -179,13 +197,13 @@ class Scanner {
     private void string() {
         while (peek() != '"' && !isAtEnd()) {
             if (peek() == '\n') {
-                line++;
+                row++;
             }
             advance();
         }
 
         if (isAtEnd()) {
-            Lox.error(line, "Unterminated string.");
+            Lox.error(row, col, "Unterminated string.");
             return;
         }
 
@@ -204,6 +222,7 @@ class Scanner {
         }
 
         current++;
+        col++;
         return true;
     }
 
