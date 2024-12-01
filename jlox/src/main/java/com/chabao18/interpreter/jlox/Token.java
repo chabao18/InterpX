@@ -15,7 +15,6 @@ class Token {
         this.row = row;
         this.offset = offset;
         this.length = length;
-        // fixme token pos : [row, col)
     }
 
     public String toString() {
