@@ -11,9 +11,9 @@ class Parser {
      * term           → factor ( ( "-" | "+" ) factor )* ;
      * factor         → unary ( ( "/" | "*" ) unary )* ;
      * unary          → ( "!" | "-" ) unary
-     * | primary ;
+     *                  | primary ;
      * primary        → NUMBER | STRING | "true" | "false" | "nil"
-     * | "(" expression ")" ;
+     *                  | "(" expression ")" ;
      */
     private static class ParseError extends RuntimeException {
     }

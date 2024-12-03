@@ -50,9 +50,12 @@ public class Lox {
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens();
 
-//        for (Token token : tokens) {
-//            System.out.println(token);
-//        }
+        for (Token token : tokens) {
+            System.out.println(token);
+        }
+
+        System.out.println("--------------------");
+
         Parser parser = new Parser(tokens);
         Expr expression = parser.parse();
         if (hadError) {
