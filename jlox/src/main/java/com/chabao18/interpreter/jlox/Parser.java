@@ -33,10 +33,16 @@ class Parser {
         }
     }
 
+    /**
+     * expression → equality ;
+     */
     private Expr expression() {
         return equality();
     }
 
+    /**
+     * equality → comparison ( ( "!=" | "==" ) comparison )* ;
+     */
     private Expr equality() {
         Expr expr = comparison();
         while (match(TokenType.BANG_EQUAL, TokenType.EQUAL_EQUAL)) {
@@ -47,6 +53,9 @@ class Parser {
         return expr;
     }
 
+    /**
+     * comparison → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
+     */
     private Expr comparison() {
         Expr expr = term();
         while (match(TokenType.GREATER, TokenType.GREATER_EQUAL, TokenType.LESS, TokenType.LESS_EQUAL)) {
@@ -57,6 +66,9 @@ class Parser {
         return expr;
     }
 
+    /**
+     * term → factor ( ( "-" | "+" ) factor )* ;
+     */
     private Expr term() {
         Expr expr = factor();
         while (match(TokenType.MINUS, TokenType.PLUS)) {
@@ -67,6 +79,9 @@ class Parser {
         return expr;
     }
 
+    /**
+     * factor → unary ( ( "/" | "*" ) unary )* ;
+     */
     private Expr factor() {
         Expr expr = unary();
         while (match(TokenType.SLASH, TokenType.STAR)) {
@@ -77,6 +92,10 @@ class Parser {
         return expr;
     }
 
+    /**
+     * unary → ( "!" | "-" ) unary
+     * | primary ;
+     */
     private Expr unary() {
         if (match(TokenType.BANG, TokenType.MINUS)) {
             Token operator = previous();
@@ -86,6 +105,10 @@ class Parser {
         return primary();
     }
 
+    /**
+     * highest precedence, transform the token to an expression
+     * primary → NUMBER | STRING | "true" | "false" | "nil"
+     */
     private Expr primary() {
         if (match(TokenType.FALSE)) {
             return new Expr.Literal(false);
@@ -107,6 +130,9 @@ class Parser {
         throw error(peek(), "Expect expression.");
     }
 
+    /**
+     * match the token type and advance the token
+     */
     private boolean match(TokenType... types) {
         for (TokenType type : types) {
             if (check(type)) {
