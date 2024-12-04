@@ -134,6 +134,9 @@ public class Interpreter implements Expr.Visitor<Object> {
 
     private void checkNumberOperands(Token operator, Object left, Object right) {
         if (left instanceof Double && right instanceof Double) {
+            if (Double.compare((double) right, 0.0) == 0) {
+                throw new RuntimeError(operator, "Division by zero.");
+            }
             return;
         }
         throw new RuntimeError(operator, "Operands must be numbers.");
