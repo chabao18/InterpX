@@ -42,4 +42,10 @@ public class ASTPrinter implements Expr.Visitor<String> {
     public String visitUnaryExpr(Expr.Unary expr) {
         return "(" + expr.operator.lexeme + expr.right.accept(this) + ")";
     }
+
+    @Override
+    public String visitVariableExpr(Expr.Variable expr) {
+        // todo
+        return null;
+    }
 }
