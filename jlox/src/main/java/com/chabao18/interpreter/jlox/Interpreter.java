@@ -1,14 +1,17 @@
 package com.chabao18.interpreter.jlox;
 
-public class Interpreter implements Expr.Visitor<Object> {
-    String interpret(Expr expression) {
+import java.util.List;
+
+public class Interpreter implements Expr.Visitor<Object>,
+        Stmt.Visitor<Void> {
+    void interpret(List<Stmt> statements) {
         try {
-            Object value = evaluate(expression);
-            return stringify(value);
+            for (Stmt statement : statements) {
+                execute(statement);
+            }
         } catch (RuntimeError error) {
             Lox.runtimeError(error);
         }
-        return "nil";
     }
 
     @Override
@@ -88,6 +91,10 @@ public class Interpreter implements Expr.Visitor<Object> {
         return expr.accept(this);
     }
 
+    private void execute(Stmt stmt) {
+        stmt.accept(this);
+    }
+
     private boolean isTruthy(Object object) {
         if (object == null) {
             return false;
@@ -140,5 +147,18 @@ public class Interpreter implements Expr.Visitor<Object> {
             return;
         }
         throw new RuntimeError(operator, "Operands must be numbers.");
+    }
+
+    @Override
+    public Void visitExpressionStmt(Stmt.Expression stmt) {
+        evaluate(stmt.expression);
+        return null;
+    }
+
+    @Override
+    public Void visitPrintStmt(Stmt.Print stmt) {
+        Object value = evaluate(stmt.expression);
+        System.out.println(stringify(value));
+        return null;
     }
 }

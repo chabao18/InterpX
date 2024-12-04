@@ -57,23 +57,20 @@ public class Lox {
     private static void run(String source) {
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens();
-
-        for (Token token : tokens) {
-            System.out.println(token);
-        }
+//        for (Token token : tokens) {
+//            System.out.println(token);
+//        }
 
         // no need to report runtime error when using REPL
         if (hadError) {
             return;
         }
 
-//        System.out.println("--------------------");
         Parser parser = new Parser(tokens);
-        Expr expression = parser.parse();
-        // System.out.println(new ASTPrinter().sprint(expression));
+        List<Stmt> statements = parser.parse();
 
-        String result = interpreter.interpret(expression);
-        System.out.println(result);
+
+        interpreter.interpret(statements);
     }
 
     static void error(Token token, String message) {
