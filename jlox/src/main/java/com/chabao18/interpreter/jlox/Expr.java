@@ -6,7 +6,6 @@ abstract class Expr {
         T visitBinaryExpr(Binary expr);
         T visitGroupingExpr(Grouping expr);
         T visitLiteralExpr(Literal expr);
-
         T visitLogicalExpr(Logical expr);
         T visitUnaryExpr(Unary expr);
         T visitVariableExpr(Variable expr);
@@ -65,7 +64,6 @@ abstract class Expr {
 
         final Object value;
     }
-
     static class Logical extends Expr {
         Logical(Expr left, Token operator, Expr right) {
             this.left = left;

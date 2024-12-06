@@ -288,6 +288,9 @@ class Parser {
         if (match(TokenType.IF)) {
             return ifStatement();
         }
+        if (match(TokenType.WHILE)) {
+            return whileStatement();
+        }
         return expressionStatement();
     }
 
@@ -313,6 +316,14 @@ class Parser {
             elseBranch = statement();
         }
         return new Stmt.If(condition, thenBranch, elseBranch);
+    }
+
+    private Stmt whileStatement() {
+        consume(TokenType.LEFT_PAREN, "Expect '(' after 'while'.");
+        Expr condition = expression();
+        consume(TokenType.RIGHT_PAREN, "Expect ')' after while condition.");
+        Stmt body = statement();
+        return new Stmt.While(condition, body);
     }
 
     private List<Stmt> block() {
