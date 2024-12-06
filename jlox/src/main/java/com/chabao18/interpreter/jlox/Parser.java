@@ -150,7 +150,38 @@ class Parser {
             Expr right = unary();
             return new Expr.Unary(operator, right);
         }
-        return primary();
+        return call();
+    }
+
+    /**
+     * call → primary ( "(" arguments? ")" )*;
+     */
+    private Expr call() {
+        Expr expr = primary();
+        while (true) {
+            if (match(TokenType.LEFT_PAREN)) {
+                expr = finishCall(expr);
+            } else {
+                break;
+            }
+        }
+        return expr;
+    }
+
+    private Expr finishCall(Expr callee) {
+        List<Expr> arguments = new ArrayList<>();
+
+        if (!check(TokenType.RIGHT_PAREN)) {
+            // analyze the arguments
+            do {
+                if (arguments.size() >= 255) {
+                    error(peek(), "Cannot have more than 255 arguments.");
+                }
+                arguments.add(expression());
+            } while (match(TokenType.COMMA));
+        }
+        Token paren = consume(TokenType.RIGHT_PAREN, "Expect ')' after arguments.");
+        return new Expr.Call(callee, paren, arguments);
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.chabao18.interpreter.jlox;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Interpreter implements Expr.Visitor<Object>,
@@ -65,6 +66,29 @@ public class Interpreter implements Expr.Visitor<Object>,
         }
 
         return null;
+    }
+
+    @Override
+    public Object visitCallExpr(Expr.Call expr) {
+        Object callee = evaluate(expr.callee);
+
+        // check if the callee is a function
+        if (!(callee instanceof LoxCallable)) {
+            throw new RuntimeError(expr.paren, "Can only call functions and classes.");
+        }
+
+        List<Object> arguments = new ArrayList<>();
+        for (Expr argument : expr.arguments) {
+            arguments.add(evaluate(argument));
+        }
+        LoxCallable function = (LoxCallable) callee;
+
+        // check if the number of arguments matches the number of parameters
+        if (arguments.size() != function.arity()) {
+            throw new RuntimeError(expr.paren, "Expected " + function.arity() + " arguments but got " + arguments.size() + ".");
+        }
+
+        return function.call(this, arguments);
     }
 
     @Override
