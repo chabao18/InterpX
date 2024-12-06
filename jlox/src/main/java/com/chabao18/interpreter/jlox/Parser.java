@@ -43,10 +43,10 @@ class Parser {
 
     /**
      * assignment → IDENTIFIER "=" assignment
-     * | equality ;
+     *              | or ;
      */
     private Expr assignment() {
-        Expr expr = equality();
+        Expr expr = or();
         if (match(TokenType.EQUAL)) {
             Token equals = previous();
             Expr value = assignment();
@@ -56,6 +56,34 @@ class Parser {
             }
             error(equals, "Invalid assignment target.");
         }
+        return expr;
+    }
+
+    /**
+     * or → and ( "or" and )* ;
+     */
+    private Expr or() {
+        Expr expr = and();
+        while (match(TokenType.OR)) {
+            Token operator = previous();
+            Expr right = and();
+            expr = new Expr.Logical(expr, operator, right);
+        }
+
+        return expr;
+    }
+
+    /**
+     * and → equality ( "and" equality )* ;
+     */
+    private Expr and() {
+        Expr expr = equality();
+        while (match(TokenType.AND)) {
+            Token operator = previous();
+            Expr right = equality();
+            expr = new Expr.Logical(expr, operator, right);
+        }
+
         return expr;
     }
 
@@ -113,7 +141,7 @@ class Parser {
 
     /**
      * unary → ( "!" | "-" ) unary
-     * | primary ;
+     *         | primary ;
      */
     private Expr unary() {
         if (match(TokenType.BANG, TokenType.MINUS)) {
@@ -127,6 +155,8 @@ class Parser {
     /**
      * highest precedence, transform the token to an expression
      * primary → NUMBER | STRING | "true" | "false" | "nil"
+     *          | "(" expression ")" ;
+     *          | IDENTIFIER ;
      */
     private Expr primary() {
         if (match(TokenType.FALSE)) {
@@ -255,6 +285,9 @@ class Parser {
         if (match(TokenType.LEFT_BRACE)) {
             return new Stmt.Block(block());
         }
+        if (match(TokenType.IF)) {
+            return ifStatement();
+        }
         return expressionStatement();
     }
 
@@ -268,6 +301,18 @@ class Parser {
         Expr expr = expression();
         consume(TokenType.SEMICOLON, "Expect ';' after expression.");
         return new Stmt.Expression(expr);
+    }
+
+    private Stmt ifStatement() {
+        consume(TokenType.LEFT_PAREN, "Expect '(' after 'if'.");
+        Expr condition = expression();
+        consume(TokenType.RIGHT_PAREN, "Expect ')' after if condition.");
+        Stmt thenBranch = statement();
+        Stmt elseBranch = null;
+        if (match(TokenType.ELSE)) {
+            elseBranch = statement();
+        }
+        return new Stmt.If(condition, thenBranch, elseBranch);
     }
 
     private List<Stmt> block() {

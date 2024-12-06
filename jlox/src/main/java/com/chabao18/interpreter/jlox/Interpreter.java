@@ -78,6 +78,25 @@ public class Interpreter implements Expr.Visitor<Object>,
     }
 
     @Override
+    public Object visitLogicalExpr(Expr.Logical expr) {
+        Object left = evaluate(expr.left);
+
+        // short-circuiting
+        // return a "value" with appropriate truthiness
+        // e.g. print "hi" or 2 -> "hi"
+        if (expr.operator.type == TokenType.OR) {
+            if (isTruthy(left)) {
+                return left;
+            }
+        } else {
+            if (!isTruthy(left)) {
+                return left;
+            }
+        }
+        return evaluate(expr.right);
+    }
+
+    @Override
     public Object visitUnaryExpr(Expr.Unary expr) {
         Object right = evaluate(expr.right);
 
@@ -167,7 +186,7 @@ public class Interpreter implements Expr.Visitor<Object>,
 
     private void checkNumberOperands(Token operator, Object left, Object right) {
         if (left instanceof Double && right instanceof Double) {
-            if (Double.compare((double) right, 0.0) == 0) {
+            if (operator.type == TokenType.SLASH && Double.compare((double) right, 0.0) == 0) {
                 throw new RuntimeError(operator, "Division by zero.");
             }
             return;
@@ -184,6 +203,16 @@ public class Interpreter implements Expr.Visitor<Object>,
     @Override
     public Void visitExpressionStmt(Stmt.Expression stmt) {
         evaluate(stmt.expression);
+        return null;
+    }
+
+    @Override
+    public Void visitIfStmt(Stmt.If stmt) {
+        if (isTruthy(evaluate(stmt.condition))) {
+            execute(stmt.thenBranch);
+        } else if (stmt.elseBranch != null) {
+            execute(stmt.elseBranch);
+        }
         return null;
     }
 
