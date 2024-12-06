@@ -8,7 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class Lox {
+class Lox {
 
     // make the interpreter static so that it can store global state
     private static final Interpreter interpreter = new Interpreter();

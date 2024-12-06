@@ -1,6 +1,6 @@
 package com.chabao18.interpreter.jlox;
 
-public class ASTPrinter implements Expr.Visitor<String> {
+class ASTPrinter implements Expr.Visitor<String> {
     public static void main(String[] args) {
         Expr expression = new Expr.Binary(
                 new Expr.Unary(

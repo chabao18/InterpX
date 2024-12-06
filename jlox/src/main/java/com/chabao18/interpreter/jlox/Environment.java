@@ -3,7 +3,7 @@ package com.chabao18.interpreter.jlox;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Environment {
+class Environment {
     /**
      * +-----------------------+
      * |       TOP LEVEL       |

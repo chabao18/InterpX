@@ -6,7 +6,6 @@ abstract class Expr {
     interface Visitor<T> {
         T visitAssignExpr(Assign expr);
         T visitBinaryExpr(Binary expr);
-
         T visitCallExpr(Call expr);
         T visitGroupingExpr(Grouping expr);
         T visitLiteralExpr(Literal expr);
@@ -44,7 +43,6 @@ abstract class Expr {
         final Token operator;
         final Expr right;
     }
-
     static class Call extends Expr {
         Call(Expr callee, Token paren, List<Expr> arguments) {
             this.callee = callee;
