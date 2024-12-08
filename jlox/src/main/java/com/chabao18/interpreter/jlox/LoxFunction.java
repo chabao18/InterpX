@@ -18,12 +18,15 @@ class LoxFunction implements LoxCallable {
 
     @Override
     public Object call(Interpreter interpreter, List<Object> arguments) {
+        // when calling a function, create a new environment,
+        // whose enclosing(parent) environment is the closure of the function
         Environment environment = new Environment(closure);
         for (int i = 0; i < declaration.params.size(); i++) {
             environment.define(declaration.params.get(i).lexeme, arguments.get(i));
         }
 
         try {
+            // update the environment of the interpreter to the new environment
             interpreter.executeBlock(declaration.body, environment);
         } catch (Return returnValue) {
             return returnValue.value;

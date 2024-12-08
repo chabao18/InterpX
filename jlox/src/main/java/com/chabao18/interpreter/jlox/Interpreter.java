@@ -252,6 +252,8 @@ class Interpreter implements Expr.Visitor<Object>,
 
     @Override
     public Void visitFunctionStmt(Stmt.Function stmt) {
+        // when defining a function, use the current environment as the closure
+        // next step: go LoxFunction.java: call()
         LoxFunction function = new LoxFunction(stmt, environment);
         environment.define(stmt.name.lexeme, function);
         return null;
