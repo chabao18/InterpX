@@ -13,9 +13,9 @@ class Parser {
      * term           → factor ( ( "-" | "+" ) factor )* ;
      * factor         → unary ( ( "/" | "*" ) unary )* ;
      * unary          → ( "!" | "-" ) unary
-     *                  | primary ;
+     * | primary ;
      * primary        → NUMBER | STRING | "true" | "false" | "nil"
-     *                  | "(" expression ")" ;
+     * | "(" expression ")" ;
      */
     private static class ParseError extends RuntimeException {
     }
@@ -43,8 +43,8 @@ class Parser {
     }
 
     /**
-     * assignment → IDENTIFIER "=" assignment
-     *              | or ;
+     * assignment → ( call "." )? IDENTIFIER "=" assignment
+     * | or ;
      */
     private Expr assignment() {
         Expr expr = or();
@@ -54,6 +54,9 @@ class Parser {
             if (expr instanceof Expr.Variable) {
                 Token name = ((Expr.Variable) expr).name;
                 return new Expr.Assign(name, value);
+            } else if (expr instanceof Expr.Get) {
+                Expr.Get get = (Expr.Get) expr;
+                return new Expr.Set(get.object, get.name, value);
             }
             error(equals, "Invalid assignment target.");
         }
@@ -142,7 +145,7 @@ class Parser {
 
     /**
      * unary → ( "!" | "-" ) unary
-     *         | primary ;
+     * | primary ;
      */
     private Expr unary() {
         if (match(TokenType.BANG, TokenType.MINUS)) {
@@ -154,13 +157,16 @@ class Parser {
     }
 
     /**
-     * call → primary ( "(" arguments? ")" )*;
+     * call → primary ( "(" arguments? ")" | "." IDENTIFIER )* ;
      */
     private Expr call() {
         Expr expr = primary();
         while (true) {
             if (match(TokenType.LEFT_PAREN)) {
                 expr = finishCall(expr);
+            } else if (match(TokenType.DOT)) {
+                Token name = consume(TokenType.IDENTIFIER, "Expect property name after '.'.");
+                expr = new Expr.Get(expr, name);
             } else {
                 break;
             }
@@ -187,8 +193,8 @@ class Parser {
     /**
      * highest precedence, transform the token to an expression
      * primary → NUMBER | STRING | "true" | "false" | "nil"
-     *          | "(" expression ")" ;
-     *          | IDENTIFIER ;
+     * | "(" expression ")" ;
+     * | IDENTIFIER ;
      */
     private Expr primary() {
         if (match(TokenType.FALSE)) {

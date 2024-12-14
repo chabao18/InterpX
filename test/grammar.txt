@@ -1,4 +1,10 @@
-expression     → equality ;
+expression     → assignment ;
+
+assignment     → ( call "." )? IDENTIFIER "=" assignment
+               | logic_or ;
+
+logic_or       → logic_and ( "or" logic_and )* ;
+logic_and      → equality ( "and" equality )* ;
 
 equality       → comparison ( ( "!=" | "==" ) comparison )* ;
 
@@ -9,18 +15,56 @@ term           → factor ( ( "-" | "+" ) factor )* ;
 factor         → unary ( ( "/" | "*" ) unary )* ;
 
 unary          → ( "!" | "-" ) unary
-               | primary ;
+               | call ;
+
+call           → primary ( "(" arguments? ")" | "." IDENTIFIER )* ;
+
+arguments      → expression ( "," expression )* ;
 
 primary        → NUMBER | STRING | "true" | "false" | "nil"
                | "(" expression ")" ;
+               | IDENTIFIER ; # variable
 
-----------------------------------------------
+-------------- statement --------------------------------
 
-program        → statement* EOF ;
+program        → declaration* EOF ;
+
+declaration    → classDecl
+               | funDecl
+               | varDecl
+               | statement ;
+
+classDecl      → "class" IDENTIFIER "{" function* "}" ;
+
+funDecl        → "fun" function ;
+function       → IDENTIFIER "(" parameters? ")" block ;
+parameters     → IDENTIFIER ( "," IDENTIFIER )* ;
+
+varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
 
 statement      → exprStmt
-               | printStmt ;
+               | forStmt
+               | printStmt
+               | ifStmt
+               | returnStmt
+               | whileStmt
+               | block ;
+
 
 exprStmt       → expression ";" ;
 
 printStmt      → "print" expression ";" ;
+
+ifStmt         → "if" "(" expression ")" statement ( "else" statement )? ;
+
+returnStmt     → "return" expression? ";" ;
+
+whileStmt      → "while" "(" expression ")" statement ;
+
+block          → "{" declaration* "}" ;
+
+-----
+TODO:
+ 更好地错误处理
+ 打印语法树
+ 写readme
