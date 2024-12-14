@@ -296,6 +296,9 @@ class Parser {
             if (match(TokenType.FUN)) {
                 return function("function");
             }
+            if (match(TokenType.CLASS)) {
+                return classDeclaration();
+            }
             return statement();
         } catch (ParseError error) {
             synchronize();
@@ -311,6 +314,22 @@ class Parser {
         }
         consume(TokenType.SEMICOLON, "Expect ';' after variable declaration.");
         return new Stmt.Var(name, initializer);
+    }
+
+    /**
+     * classDecl → "class" IDENTIFIER "{" function* "}" ;
+     */
+    private Stmt classDeclaration() {
+        Token name = consume(TokenType.IDENTIFIER, "Expect class name.");
+        consume(TokenType.LEFT_BRACE, "Expect '{' before class body.");
+
+        List<Stmt.Function> methods = new ArrayList<>();
+        while (!check(TokenType.RIGHT_BRACE) && !isAtEnd()) {
+            methods.add((Stmt.Function) function("method"));
+        }
+
+        consume(TokenType.RIGHT_BRACE, "Expect '}' after class body.");
+        return new Stmt.Class(name, methods);
     }
 
     private Stmt function(String kind) {

@@ -5,12 +5,12 @@ import java.util.List;
 abstract class Stmt {
     interface Visitor<T> {
         T visitBlockStmt(Block stmt);
-        T visitExpressionStmt(Expression stmt);
 
+        T visitClassStmt(Class stmt);
+        T visitExpressionStmt(Expression stmt);
         T visitFunctionStmt(Function stmt);
         T visitIfStmt(If stmt);
         T visitPrintStmt(Print stmt);
-
         T visitReturnStmt(Return stmt);
         T visitVarStmt(Var stmt);
         T visitWhileStmt(While stmt);
@@ -27,6 +27,21 @@ abstract class Stmt {
 
         final List<Stmt> statements;
     }
+
+    static class Class extends Stmt {
+        Class(Token name, List<Stmt.Function> methods) {
+            this.name = name;
+            this.methods = methods;
+        }
+
+        @Override
+        <T> T accept(Visitor<T> visitor) {
+            return visitor.visitClassStmt(this);
+        }
+
+        final Token name;
+        final List<Stmt.Function> methods;
+    }
     static class Expression extends Stmt {
         Expression(Expr expression) {
             this.expression = expression;
@@ -39,7 +54,6 @@ abstract class Stmt {
 
         final Expr expression;
     }
-
     static class Function extends Stmt {
         Function(Token name, List<Token> params, List<Stmt> body) {
             this.name = name;
@@ -84,7 +98,6 @@ abstract class Stmt {
 
         final Expr expression;
     }
-
     static class Return extends Stmt {
         Return(Token keyword, Expr value) {
             this.keyword = keyword;
