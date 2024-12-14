@@ -1,1 +1,25 @@
-(1 + 2) * 3
+var a = "global";
+{
+  var b = "outer";
+
+  fun showAandB() {
+    print a; // 应该输出 "global"
+    print b; // 应该输出 "outer"
+  }
+
+  {
+    var b = "inner";
+
+    fun showB() {
+    print a;
+      print b;
+    }
+
+    // showAandB();
+    showB();
+
+    var a = "block";
+    // showAandB();
+    showB();
+  }
+}
