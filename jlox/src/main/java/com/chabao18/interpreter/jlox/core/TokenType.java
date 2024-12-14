@@ -1,4 +1,4 @@
-package com.chabao18.interpreter.jlox;
+package com.chabao18.interpreter.jlox.core;
 
 enum TokenType {
 

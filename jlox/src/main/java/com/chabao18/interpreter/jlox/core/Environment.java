@@ -1,9 +1,11 @@
-package com.chabao18.interpreter.jlox;
+package com.chabao18.interpreter.jlox.core;
+
+import com.chabao18.interpreter.jlox.runtime.RuntimeError;
 
 import java.util.HashMap;
 import java.util.Map;
 
-class Environment {
+public class Environment {
     /**
      * +-----------------------+
      * |       TOP LEVEL       |
@@ -24,11 +26,11 @@ class Environment {
         enclosing = null;
     }
 
-    Environment(Environment enclosing) {
+    public Environment(Environment enclosing) {
         this.enclosing = enclosing;
     }
 
-    void define(String name, Object value) {
+    public void define(String name, Object value) {
         values.put(name, value);
     }
 

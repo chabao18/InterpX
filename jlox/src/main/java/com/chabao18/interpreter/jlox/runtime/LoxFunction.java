@@ -1,15 +1,26 @@
-package com.chabao18.interpreter.jlox;
+package com.chabao18.interpreter.jlox.runtime;
+
+import com.chabao18.interpreter.jlox.ast.Stmt;
+import com.chabao18.interpreter.jlox.core.Environment;
+import com.chabao18.interpreter.jlox.core.Interpreter;
 
 import java.util.List;
 
-class LoxFunction implements LoxCallable {
+public class LoxFunction implements LoxCallable {
     private final Stmt.Function declaration;
     private final Environment closure;
 
-    LoxFunction(Stmt.Function declaration, Environment closure) {
+    public LoxFunction(Stmt.Function declaration, Environment closure) {
         this.declaration = declaration;
         this.closure = closure;
     }
+
+    LoxFunction bind(LoxInstance instance) {
+        Environment environment = new Environment(closure);
+        environment.define("this", instance);
+        return new LoxFunction(declaration, environment);
+    }
+
 
     @Override
     public int arity() {

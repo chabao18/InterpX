@@ -1,11 +1,15 @@
-package com.chabao18.interpreter.jlox;
+package com.chabao18.interpreter.jlox.core;
+
+import com.chabao18.interpreter.jlox.ast.Expr;
+import com.chabao18.interpreter.jlox.ast.Stmt;
+import com.chabao18.interpreter.jlox.runtime.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class Interpreter implements Expr.Visitor<Object>,
+public class Interpreter implements Expr.Visitor<Object>,
         Stmt.Visitor<Void> {
     final Environment globals = new Environment();
     private Environment environment = globals;
@@ -173,6 +177,11 @@ class Interpreter implements Expr.Visitor<Object>,
     }
 
     @Override
+    public Object visitThisExpr(Expr.This expr) {
+        return lookUpVariable(expr.keyword, expr);
+    }
+
+    @Override
     public Object visitUnaryExpr(Expr.Unary expr) {
         Object right = evaluate(expr.right);
 
@@ -218,7 +227,7 @@ class Interpreter implements Expr.Visitor<Object>,
         locals.put(expr, depth);
     }
 
-    void executeBlock(List<Stmt> statements, Environment environment) {
+    public void executeBlock(List<Stmt> statements, Environment environment) {
         Environment previous = this.environment;
         try {
             this.environment = environment;

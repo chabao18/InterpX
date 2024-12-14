@@ -1,4 +1,7 @@
-package com.chabao18.interpreter.jlox;
+package com.chabao18.interpreter.jlox.core;
+
+import com.chabao18.interpreter.jlox.ast.Expr;
+import com.chabao18.interpreter.jlox.ast.Stmt;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -208,6 +211,9 @@ class Parser {
         }
         if (match(TokenType.NUMBER, TokenType.STRING)) {
             return new Expr.Literal(previous().literal);
+        }
+        if (match(TokenType.THIS)) {
+            return new Expr.This(previous());
         }
         if (match(TokenType.IDENTIFIER)) {
             return new Expr.Variable(previous());

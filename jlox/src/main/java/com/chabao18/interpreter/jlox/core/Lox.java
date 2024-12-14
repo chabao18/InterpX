@@ -1,4 +1,7 @@
-package com.chabao18.interpreter.jlox;
+package com.chabao18.interpreter.jlox.core;
+
+import com.chabao18.interpreter.jlox.ast.Stmt;
+import com.chabao18.interpreter.jlox.runtime.RuntimeError;
 
 import java.io.BufferedReader;
 import java.io.IOException;

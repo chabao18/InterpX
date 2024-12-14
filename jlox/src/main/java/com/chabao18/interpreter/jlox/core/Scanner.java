@@ -1,11 +1,11 @@
-package com.chabao18.interpreter.jlox;
+package com.chabao18.interpreter.jlox.core;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.chabao18.interpreter.jlox.TokenType.*;
+import static com.chabao18.interpreter.jlox.core.TokenType.*;
 
 class Scanner {
 

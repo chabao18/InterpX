@@ -1,13 +1,15 @@
-package com.chabao18.interpreter.jlox;
+package com.chabao18.interpreter.jlox.runtime;
+
+import com.chabao18.interpreter.jlox.core.Interpreter;
 
 import java.util.List;
 import java.util.Map;
 
-class LoxClass implements LoxCallable {
+public class LoxClass implements LoxCallable {
     final String name;
     private final Map<String, LoxFunction> methods;
 
-    LoxClass(String name, Map<String, LoxFunction> methods) {
+    public LoxClass(String name, Map<String, LoxFunction> methods) {
         this.name = name;
         this.methods = methods;
     }

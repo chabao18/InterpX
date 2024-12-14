@@ -1,4 +1,6 @@
-package com.chabao18.interpreter.jlox;
+package com.chabao18.interpreter.jlox.runtime;
+
+import com.chabao18.interpreter.jlox.core.Token;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,18 +18,20 @@ public class LoxInstance {
         return klass.name + " instance";
     }
 
-    Object get(Token name) {
+    public Object get(Token name) {
         if (fields.containsKey(name.lexeme)) {
             return fields.get(name.lexeme);
         }
 
         LoxFunction method = klass.findMethod(name.lexeme);
-        if (method != null) return method;
+        if (method != null) {
+            return method.bind(this);
+        }
 
         throw new RuntimeError(name, "Undefined property '" + name.lexeme + "'.");
     }
 
-    void set(Token name, Object value) {
+    public void set(Token name, Object value) {
         fields.put(name.lexeme, value);
     }
 }

@@ -1,8 +1,8 @@
-package com.chabao18.interpreter.jlox;
+package com.chabao18.interpreter.jlox.core;
 
-class Token {
+public class Token {
     final TokenType type;
-    final String lexeme;
+    public final String lexeme;
     final Object literal;
     final int row;
     final int offset;

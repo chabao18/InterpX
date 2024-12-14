@@ -1,8 +1,10 @@
-package com.chabao18.interpreter.jlox;
+package com.chabao18.interpreter.jlox.runtime;
+
+import com.chabao18.interpreter.jlox.core.Interpreter;
 
 import java.util.List;
 
-interface LoxCallable {
+public interface LoxCallable {
     /**
      * the number of arguments the function expects
      */
