@@ -34,7 +34,7 @@ public class Environment {
         values.put(name, value);
     }
 
-    Object getAt(int distance, String name) {
+    public Object getAt(int distance, String name) {
         return ancestor(distance).values.get(name);
     }
 

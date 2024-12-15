@@ -304,7 +304,7 @@ public class Interpreter implements Expr.Visitor<Object>,
         environment.define(stmt.name.lexeme, null);
         Map<String, LoxFunction> methods = new HashMap<>();
         for (Stmt.Function method : stmt.methods) {
-            LoxFunction function = new LoxFunction(method, environment);
+            LoxFunction function = new LoxFunction(method, environment, method.name.lexeme.equals("init"));
             methods.put(method.name.lexeme, function);
         }
 
@@ -323,7 +323,7 @@ public class Interpreter implements Expr.Visitor<Object>,
     public Void visitFunctionStmt(Stmt.Function stmt) {
         // when defining a function, use the current environment as the closure
         // next step: go LoxFunction.java: call()
-        LoxFunction function = new LoxFunction(stmt, environment);
+        LoxFunction function = new LoxFunction(stmt, environment, false);
         environment.define(stmt.name.lexeme, function);
         return null;
     }
